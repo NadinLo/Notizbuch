@@ -11,17 +11,20 @@ public class Main {
             conn = DriverManager.getConnection(url);
             System.out.println("got it!");
             Statement stmt = null;
-            String query = "select * from kalender";
+            String query = "SELECT TIMESTAMP(`datum`,`zeit`) AS Wann, " +
+                    "DATE_ADD(TIMESTAMP(`datum`,`zeit`), INTERVAL `zeitspanne` HOUR_SECOND) AS bis, " +
+                    "`event`, `kommentar` FROM `kalender`";
             try {
                 stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(query);
                 while (rs.next()) {
-                    int entry = rs.getInt("id");
-                    String date = rs.getDate("datum").toString();
-                    String time = rs.getTime("zeit").toString();
+                    //int entry = rs.getInt("id");
+                    String date = rs.getTimestamp("Wann").toString();
+                    //String time = rs.getTime("zeit").toString();
+                    String till = rs.getTimestamp("bis").toString();
                     String event = rs.getString("event");
                     String comment = rs.getString("kommentar");
-                    System.out.println(entry + " " + date + " " + time + " " + event + " " + comment);
+                    System.out.println(date + " bis " + till + " " + event + " " + comment);
                 }
             } catch (SQLException e) {
                 throw new Error("Problem", e);
