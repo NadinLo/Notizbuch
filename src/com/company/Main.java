@@ -10,12 +10,11 @@ public class Main {
             String url = "jdbc:mysql://localhost:3306/notizbuch?user=root";
             conn = DriverManager.getConnection(url);
             System.out.println("got it!");
-            Statement stmt = null;
+            System.out.println("my calendar");
             String query = "SELECT TIMESTAMP(`datum`,`zeit`) AS Wann, " +
                     "DATE_ADD(TIMESTAMP(`datum`,`zeit`), INTERVAL `zeitspanne` HOUR_SECOND) AS bis, " +
                     "`event`, `kommentar` FROM `kalender`";
-            try {
-                stmt = conn.createStatement();
+            try (Statement stmt = conn.createStatement()) {
                 ResultSet rs = stmt.executeQuery(query);
                 while (rs.next()) {
                     //int entry = rs.getInt("id");
@@ -28,10 +27,20 @@ public class Main {
                 }
             } catch (SQLException e) {
                 throw new Error("Problem", e);
-            } finally {
-                if (stmt != null) {
-                    stmt.close();
+            }
+
+            System.out.println("my journals");
+            query = "SELECT * FROM `eintrag`";
+            try (Statement stmt = conn.createStatement()) {
+                ResultSet rs = stmt.executeQuery(query);
+                while (rs.next()) {
+                    String date = rs.getDate("datum").toString();
+                    String title = rs.getString("titel");
+                    String log = rs.getString("log");
+                    System.out.println(date + " " + title + "\n\t" + log);
                 }
+            } catch (SQLException e) {
+                throw new Error("Problem", e);
             }
         } catch (SQLException e) {
             throw new Error("Problem", e);
