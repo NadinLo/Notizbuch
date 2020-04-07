@@ -42,6 +42,16 @@ public class Main {
             } catch (SQLException e) {
                 throw new Error("Problem", e);
             }
+
+            System.out.println("insert to journal");
+            String command = "INSERT INTO `eintrag`(`titel`, `log`) VALUES ('Dienstag Nachmittag', 'Löwenzahnhonig ist fertig " +
+                    "(wahrscheinlich misslungen), eir haben Mittag gegessen (Reste von gestern Abend), Gemüsekiste ist " +
+                    "gekommen! Ich freue mich über Rhabarber, code nun weiter und komme gut voran.')";
+            try (Statement stmt = conn.createStatement()) {
+                stmt.executeUpdate(command);
+            } catch (SQLException e) {
+                throw new Error("Problem", e);
+            }
         } catch (SQLException e) {
             throw new Error("Problem", e);
         } finally {
